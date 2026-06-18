@@ -1,0 +1,106 @@
+entity-relationship-diagram
+
+title Newspaper Distribution Management System
+
+users [icon: user, color: blue] {
+  user_id string pk
+  name string
+  email string
+  password string
+  role string
+  status string
+}
+
+hubs [icon: home, color: green] {
+  hub_id string pk
+  hub_name string
+  location_address string
+}
+
+vendors [icon: briefcase, color: orange] {
+  vendor_id string pk
+  vendor_name string
+  phone string
+  associated_hub_id string fk
+}
+
+routes [icon: map, color: purple] {
+  route_id string pk
+  route_name string
+  start_hub_id string fk
+  estimated_duration int
+}
+
+vehicles [icon: truck, color: yellow] {
+  vehicle_id string pk
+  license_plate string
+  capacity_weight_or_volume decimal
+  status string
+}
+
+trips [icon: navigation, color: red] {
+  trip_id string pk
+  route_id string fk
+  vehicle_id string fk
+  driver_id string fk
+  scheduled_start datetime
+  actual_start datetime
+  actual_end datetime
+  status string
+}
+
+bundles [icon: package, color: gray] {
+  bundle_id string pk
+  trip_id string fk
+  destination_vendor_id string fk
+  quantity int
+  packing_status string
+  packed_at timestamp
+}
+
+
+delivery_confirmations [icon: check-circle, color: green] {
+  confirmation_id string pk
+  bundle_id string fk
+  status string
+  recipient_signature_url string
+  confirmed_at timestamp
+  confirmed_by string fk
+}
+
+issues_and_alerts [icon: alert-triangle, color: red] {
+  issue_id string pk
+  trip_id string fk
+  raised_by string fk
+  assigned_to string fk
+  category string
+  description string
+  status string
+  deadline datetime
+  created_at timestamp
+  updated_at timestamp
+}
+drivers [icon: truck, color: blue] {
+  
+  driver_id string pk
+  name string
+  license_number string
+  phone string
+  status string
+  user_id string fk
+}
+
+
+vendors.associated_hub_id > hubs.hub_id
+routes.start_hub_id > hubs.hub_id
+trips.route_id > routes.route_id
+trips.vehicle_id > vehicles.vehicle_id
+trips.driver_id > users.user_id
+bundles.trip_id > trips.trip_id
+bundles.destination_vendor_id > vendors.vendor_id
+delivery_confirmations.bundle_id - bundles.bundle_id
+delivery_confirmations.confirmed_by > users.user_id
+issues_and_alerts.trip_id > trips.trip_id
+issues_and_alerts.raised_by > users.user_id
+issues_and_alerts.assigned_to > users.user_id
+drivers.user_id > users.user_id
